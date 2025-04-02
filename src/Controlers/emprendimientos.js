@@ -9,7 +9,7 @@ const getEmprendimientos = async(req, res) => {
     try { 
         const resp = await axios.get(`${url}&limit=${10}&offset=${0}&key=${apiKey}`);
         //normalizo la respuesta
-        const empNormalizados = resp.data.objects;//normalizaEmprendimientos(resp.data.objects);
+        const empNormalizados = normalizaEmprendimientos(resp.data.objects);
 
         return res.json({
             empNormalizados,

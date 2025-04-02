@@ -18,8 +18,8 @@ const url = process.env.URL;
 
 //trae propiedades
 const getProperties = async (req, res) => {
-    const { operacion, tipo, precioMin, precioMax, limit = 12, offset = 0 } = req.query;
-
+    const { operacion, tipo, precioMin, precioMax, limit = 12, offset = 0, internacionales } = req.query;
+console.log("query: ", req.query);
     try {
         let propiedades = [];
         let fetchedCount = 0;
@@ -57,6 +57,12 @@ const getProperties = async (req, res) => {
                         return precioValor >= precioMinNum && precioValor <= precioMaxNum;
                     })
                 )
+            );
+        }
+        // Filtrar propiedades que NO son de Argentina
+        if (internacionales === "true") {
+            propiedades = propiedades.filter((p) =>
+                !/\bargentina\b/i.test(p.ubicacion.ubicacion)
             );
         }
 
