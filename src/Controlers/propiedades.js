@@ -19,7 +19,7 @@ const url = process.env.URL;
 //trae propiedades
 const getProperties = async (req, res) => {
     const { operacion, tipo, precioMin, precioMax, limit = 12, offset = 0, internacionales } = req.query;
-console.log("query: ", req.query);
+
     try {
         let propiedades = [];
         let fetchedCount = 0;
