@@ -13,7 +13,7 @@ const { normalizaProps, normalizoPropiedad } = require('../Helpers/normalizaProp
 
 */
 
-const apiKey = process.env.API_KEY
+const apiKey = process.env.API_KEY;
 const url = process.env.URL;
 
 //trae propiedades
