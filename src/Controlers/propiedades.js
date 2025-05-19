@@ -19,6 +19,7 @@ const url = process.env.URL;
 //trae propiedades
 const getProperties = async (req, res) => {
     const { operacion, tipo, precioMin, precioMax, limit = 12, offset = 0, ambientes } = req.query;
+    
     try {
         let propiedades = [];
         let fetchedCount = 0;
@@ -35,13 +36,13 @@ const getProperties = async (req, res) => {
         } while (fetchedCount === fetchLimit); // Continúa hasta que no se reciban más propiedades
 
         // Aplicar filtros
-        if (operacion) {
+        if (operacion && operacion !== 'Todas') {
             propiedades = propiedades.filter((p) =>
                 p.operacion.some((item) => item.operacion === operacion)
             );
         }
 
-        if (tipo && tipo !== 'todas') {
+        if (tipo && tipo !== 'Todas') {
             propiedades = propiedades.filter((p) => p.tipo.nombre === tipo);
         }
 
