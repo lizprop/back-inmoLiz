@@ -18,7 +18,7 @@ app.use(cors());
 // Configuración de la base de datos
 dbConnection();
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 //declaro rutas
 app.use('/propiedades', routerPropiedades);
 app.use('/emprendimientos', routerEmprendimientos);
