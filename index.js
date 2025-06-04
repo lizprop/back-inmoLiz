@@ -8,7 +8,7 @@ dotenv.config(); //colocarlo ACÁ!!!!
 //import rutas
 const routerPropiedades = require('./src/Routes/propiedades');
 const routerEmprendimientos = require('./src/Routes/emprendimientos');
-const routerMegusta = require('./src/Routes/meGustan');
+const routerMegusta = require('./src/Routes/meGustan')
 
 const app = express();
 
