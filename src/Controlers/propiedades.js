@@ -126,7 +126,84 @@ const getProperty = async(req, res) => {
     }
 };
 
+//trae propiedades para mostrar en mapa
+const getPropsEnMapa = async (req, res) => {
+    const { operacion, tipo, precioMin, precioMax, ambientes, destacadas } = req.query;
+
+    try {
+        let propiedades = [];
+        let fetchedCount = 0;
+        let currentOffset = 0;
+        const fetchLimit = 20;
+
+        do {
+            const resp = await axios.get(`${url}&limit=${fetchLimit}&offset=${currentOffset}&key=${apiKey}`);
+            const fetchedProps = normalizaProps(resp.data.objects);
+            propiedades = [...propiedades, ...fetchedProps];
+            fetchedCount = fetchedProps.length;
+            currentOffset += fetchLimit;
+        } while (fetchedCount === fetchLimit);
+
+        // Filtros
+        if (operacion && operacion !== 'Todas') {
+            propiedades = propiedades.filter((p) =>
+                p.operacion.some((item) => item.operacion === operacion)
+            );
+        }
+
+        if (tipo && tipo !== 'Todas') {
+            propiedades = propiedades.filter((p) => p.tipo.nombre === tipo);
+        }
+
+        if (precioMin || precioMax) {
+            const precioMinNum = precioMin ? Number(precioMin) : 0;
+            const precioMaxNum = precioMax ? Number(precioMax) : Infinity;
+
+            propiedades = propiedades.filter((p) =>
+                p.operacion.some((item) =>
+                    item.precios.some((precio) => {
+                        const precioValor = Number(precio.precio);
+                        return precioValor >= precioMinNum && precioValor <= precioMaxNum;
+                    })
+                )
+            );
+        }
+
+        if (ambientes && ambientes !== 'mas') {
+            propiedades = propiedades.filter((p) => p.ambientes === Number(ambientes));
+        }
+
+        if (ambientes && ambientes === 'mas') {
+            propiedades = propiedades.filter((p) => p.ambientes >= 5);
+        }
+
+        if (destacadas) {
+            propiedades = propiedades.filter(p => p.destacadaEnWeb === true);
+        }
+
+        // Filtrar solo propiedades con coordenadas válidas
+        propiedades = propiedades.filter(p => p.geoLat && p.geoLong);
+
+        // Ordenar destacadas primero
+        const propsDestacadas = propiedades.filter(p => p.destacadaEnWeb === true);
+        const propsNoDestacadas = propiedades.filter(p => !p.destacadaEnWeb);
+        propiedades = propsDestacadas.concat(propsNoDestacadas);
+
+        const total = propiedades.length;
+
+        res.json({
+            total,
+            propiedades
+        });
+    } catch (error) {
+        console.error("Error en getPropsEnMapa:", error.message);
+        res.status(500).json({ error: "Error al obtener las propiedades para el mapa." });
+    }
+};
+
+
 module.exports = {
     getProperties,
     getProperty,
+    getPropsEnMapa
 }

@@ -1,15 +1,15 @@
 const express = require('express');
-const { getProperties, getProperty } = require('../Controlers/propiedades');
+const { getProperties, getProperty, getPropsEnMapa } = require('../Controlers/propiedades');
 
 const router = express.Router();
 
-//trae propiedades pagina de a 20
-//ejem de url para postman: http://localhost:3001/propiedades?tipo=PH
-router.get('/', getProperties);
+// 🔹 Ruta que trae propiedades paginadas y con filtros
+router.get('/propiedades', getProperties);
 
-//trae prop para detalle por ID
+// 🔹 Ruta que trae propiedades para el mapa
+router.get('/propsMap', getPropsEnMapa);
+
+// 🔹 Ruta que trae una propiedad por ID (tiene que ir última)
 router.get('/:id', getProperty);
 
-
-
-module.exports = router; 
+module.exports = router;
