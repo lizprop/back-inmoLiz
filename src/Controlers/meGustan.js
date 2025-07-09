@@ -61,8 +61,25 @@ const restaMeGusta = async(req, res) => {
     }
 };
 
+const getMeGustaProps = async(req, res) => {
+    
+    try {
+        const props = await MeGusta.find();
+        
+        if(!props){
+            res.send("No hay me gusta para dicha prop");
+        }
+
+        res.status(200).json(props);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ mensaje: "Error del servidor" });
+    }
+};
+
 module.exports = {
     sumoMeGusta,
     getMegustaProp,
     restaMeGusta,
+    getMeGustaProps
 }
