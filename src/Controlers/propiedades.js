@@ -18,7 +18,6 @@ const url = process.env.URL;
 
 //trae destacadas
 const getPropsDestacadas = async(req, res) => {
-    const { operacion, tipo, precioMin, precioMax, /* limit = 12, offset = 0, */ ambientes, destacadas } = req.query;
 
     try {
         let propiedades = [];
@@ -36,37 +35,6 @@ const getPropsDestacadas = async(req, res) => {
         } while (fetchedCount === fetchLimit); // Continúa hasta que no se reciban más propiedades
 
         let propsDestacadas = propiedades.filter(p => p.destacadaEnWeb === true);
-
-        //filtros
-        // Aplicar filtros
-        if (operacion && operacion !== 'Todas') {
-            propsDestacadas = propsDestacadas.filter((p) =>
-                p.operacion.some((item) => item.operacion === operacion)
-            );
-        }
-        if (tipo && tipo !== 'Todas') {
-            propsDestacadas = propsDestacadas.filter((p) => p.tipo.nombre === tipo);
-        }
-        if (precioMin || precioMax) {
-            const precioMinNum = precioMin ? Number(precioMin) : 0;
-            const precioMaxNum = precioMax ? Number(precioMax) : Infinity;
-
-            propsDestacadas = propsDestacadas.filter((p) =>
-                p.operacion.some((item) =>
-                    item.precios.some((precio) => {
-                        const precioValor = Number(precio.precio);
-                        return precioValor >= precioMinNum && precioValor <= precioMaxNum;
-                    })
-                )
-            );
-        }
-        //si tengo ambientes
-        if (ambientes && ambientes !== 'mas') {
-            propiedades = propiedades.filter((p) => p.ambientes === Number(ambientes));
-        }
-        if (ambientes && ambientes === 'mas') {
-            propsDestacadas = propsDestacadas.filter((p) => p.ambientes >= 5);
-        }
 
         const total = propsDestacadas.length;
         res.json({
