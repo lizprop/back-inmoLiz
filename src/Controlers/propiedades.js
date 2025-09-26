@@ -36,7 +36,10 @@ const getPropsDestacadas = async(req, res) => {
 
         let propsDestacadas = propiedades.filter(p => p.destacadaEnWeb === true);
 
+        //invierto el array
+        propsDestacadas = propsDestacadas.reverse();
         const total = propsDestacadas.length;
+        
         res.json({
             total,
             propsDestacadas
@@ -64,7 +67,7 @@ const getProperties = async (req, res) => {
             propiedades = [...propiedades, ...fetchedProps];
             fetchedCount = fetchedProps.length;
             currentOffset += fetchLimit;
-        } while (fetchedCount === fetchLimit); // Continúa hasta que no se reciban más propiedades
+        } while (fetchedCount === fetchLimit);
 
         // Aplicar filtros
         if (operacion && operacion !== 'Todas') {
@@ -90,21 +93,18 @@ const getProperties = async (req, res) => {
                 )
             );
         }
-        //si tengo ambientes
+
         if (ambientes && ambientes !== 'mas') {
             propiedades = propiedades.filter((p) => p.ambientes === Number(ambientes));
         }
         if (ambientes && ambientes === 'mas') {
             propiedades = propiedades.filter((p) => p.ambientes >= 5);
         }
-        // Filtrar propiedades que NO son de Argentina
-        /* if (internacional === "true") {
-            propiedades = propiedades.filter((p) =>
-                !/\bargentina\b/i.test(p.ubicacion.ubicacion)
-            );
-        } */
 
         const total = propiedades.length;
+
+        // 👉 Invertir el orden para que se muestren las últimas primero
+        propiedades = propiedades.reverse();
 
         // Paginación (de a 12 propiedades por página)
         const paginatedProperties = propiedades.slice(
@@ -112,7 +112,6 @@ const getProperties = async (req, res) => {
             Number(offset) + Number(limit)
         );
 
-        // Respuesta con datos paginados
         res.json({
             total,
             propiedades: paginatedProperties,
@@ -122,6 +121,7 @@ const getProperties = async (req, res) => {
         res.status(500).json({ error: "Error al obtener las propiedades." });
     }
 };
+
 
 //detalle propiedad por ID
 const getProperty = async(req, res) => {
